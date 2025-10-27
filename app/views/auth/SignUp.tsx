@@ -10,22 +10,23 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AppTextInput from '../../components/input/AppTextInput';
 import PrimaryButton from '../../components/Buttons/PrimaryButton';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from '../../navigator/AuthStack';
-import axios, { AxiosError } from 'axios';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import client, { NetworkRoutes } from '../../api/client';
+import { AxiosError } from 'axios';
 
-const SignIn = () => {
-  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+const SignUn = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [signInInfo, setSignInInfo] = useState({
-    email: '',
-    password: '',
-  });
   type errorType = Record<string, string[] | undefined>;
   const [error, setError] = useState<errorType>({});
   const [singleError, setSingleError] = useState('');
-  const hasEnteredPassword = signInInfo.password.length > 0;
+  const [signUpInfo, setSignInInfo] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+  const hasEnteredPassword = signUpInfo.password.length > 0;
   const passwordSuffix = hasEnteredPassword ? (
     <Text
       onPress={() => {
@@ -37,14 +38,15 @@ const SignIn = () => {
     </Text>
   ) : undefined;
 
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+
   async function handleSumit() {
     try {
       setError({});
       setSingleError('');
-      const response = await client.post(NetworkRoutes.login, signInInfo);
-
-      console.log(JSON.stringify(response.data, null, 3));
-      navigation.navigate('home', { profile: response.data.profile });
+      const response = await client.post(NetworkRoutes.singUp, signUpInfo);
+      navigation.goBack();
+      Alert.alert('Sucessfully created Account');
     } catch (e) {
       if (e instanceof AxiosError) {
         if (e.response?.data.errors) {
@@ -53,11 +55,13 @@ const SignIn = () => {
         }
         if (e.response?.data.error) {
           console.log('this os error', e.response?.data.error);
+
           setSingleError(e.response?.data.error);
         }
       }
     }
   }
+
   useEffect(() => {
     if (singleError !== '') {
       Alert.alert('Oops', singleError);
@@ -69,13 +73,27 @@ const SignIn = () => {
         <Text style={styles.title}>Welcome to Daraz</Text>
         <Text style={styles.subTitle}>Your perfect ecommerce platform</Text>
       </View>
+      {singleError != '' && <Text>{singleError}</Text>}
+      <AppTextInput
+        label="Name"
+        placeholder="John Doe"
+        autoCapitalize="none"
+        keyboardType="default"
+        value={signUpInfo.name}
+        error={error.name}
+        onChangeText={name => {
+          setSignInInfo(previouse => {
+            return { ...previouse, name };
+          });
+        }}
+      />
       <AppTextInput
         label="Email"
         placeholder="email@example.com"
         autoCapitalize="none"
-        keyboardType="email-address"
-        value={signInInfo.email}
         error={error.email}
+        keyboardType="email-address"
+        value={signUpInfo.email}
         onChangeText={email => {
           setSignInInfo(previouse => {
             return { ...previouse, email };
@@ -84,12 +102,12 @@ const SignIn = () => {
       />
       <AppTextInput
         label="Password"
+        error={error.password}
         secureTextEntry={!showPassword}
         placeholder="*************"
         autoCapitalize="none"
         suffixIcon={passwordSuffix}
-        error={error.password}
-        value={signInInfo.password}
+        value={signUpInfo.password}
         onChangeText={password => {
           ///hide passwrod on empty
           if (password.length === 0) {
@@ -104,23 +122,23 @@ const SignIn = () => {
         onPress={() => {
           handleSumit();
         }}
-        title="Login"
+        title="Create New Account"
       />
       <View style={styles.dontHaveAccount}>
-        <Text style={styles.navLink}>Don't have an Account? </Text>
+        <Text style={styles.navLink}>Already have an Account? </Text>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('signup');
+            navigation.goBack();
           }}
         >
-          <Text style={styles.signIn}>Sign In</Text>
+          <Text style={styles.signIn}>Login</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-export default SignIn;
+export default SignUn;
 
 const styles = StyleSheet.create({
   passwordSuffix: {
