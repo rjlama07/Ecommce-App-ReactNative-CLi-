@@ -49,6 +49,15 @@ const Home = ({}) => {
     setSelectedCategory(catrgory);
     setIsLoading(true);
 
+    const index = categories.findIndex(c => c === catrgory);
+    if (index !== -1 && categoryListRef.current) {
+      categoryListRef.current.scrollToIndex({
+        index: index,
+        animated: true,
+        viewPosition: 0.5, // centers the selected item (0 = left, 1 = right)
+      });
+    }
+
     try {
       if (catrgory === 'All') {
         catrgory = '';
@@ -70,6 +79,7 @@ const Home = ({}) => {
     >
       <View>
         <FlatList
+          ref={categoryListRef}
           horizontal
           data={categories}
           showsHorizontalScrollIndicator={false}
