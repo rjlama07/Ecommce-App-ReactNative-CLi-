@@ -5,6 +5,7 @@ import Fav from '../views/auth/AuthenticatedRoutes/Fav';
 import Cart from '../views/auth/AuthenticatedRoutes/Cart';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
 import { Text } from 'react-native-gesture-handler';
+import HomeNavigationStack from './HomeStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +18,7 @@ export function TabNavigator() {
     >
       <Tab.Screen
         name="home"
-        component={Home}
+        component={HomeNavigationStack}
         options={{
           tabBarIcon: ({ size, color }) => {
             return (

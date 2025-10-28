@@ -13,4 +13,6 @@ export const NetworkRoutes = {
   login: '/auth/sign-in',
   isAuth: 'auth/is-auth',
   getProducts: 'product/products',
+  getCategories: 'product/categories',
+  productDetail: (id: string) => `/product/detail/${id}`,
 };

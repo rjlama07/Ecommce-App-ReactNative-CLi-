@@ -1,28 +1,41 @@
-import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Image,
+  Touchable,
+  Pressable,
+} from 'react-native';
 import React, { FC } from 'react';
 import Product from '../../models/ProductModel';
 
 const deviceWidth = Dimensions.get('window').width;
-const ProductCart: FC<Product> = props => {
+interface ProductParams extends Product {
+  onPress: () => void;
+}
+const ProductCart: FC<ProductParams> = props => {
   const imageWidth = deviceWidth - (32 + 20);
   const imageHeight = (imageWidth * 9) / 16;
   return (
-    <View style={styles.container}>
-      <Image
-        style={{
-          width: imageWidth,
-          height: imageHeight,
-          marginBottom: 12,
-        }}
-        source={{ uri: props.poster }}
-      />
-      <Text style={styles.title}>{props.title}</Text>
-      <View style={styles.priceContiner}>
-        <Text style={styles.price}>Price: </Text>
-        <Text style={styles.mrp}>{formatPrice(props.price.mrp)}</Text>
-        <Text>{formatPrice(props.price.sale)}</Text>
+    <Pressable onPress={props.onPress}>
+      <View style={styles.container}>
+        <Image
+          style={{
+            width: imageWidth,
+            height: imageHeight,
+            marginBottom: 12,
+          }}
+          source={{ uri: props.poster }}
+        />
+        <Text style={styles.title}>{props.title}</Text>
+        <View style={styles.priceContiner}>
+          <Text style={styles.price}>Price: </Text>
+          <Text style={styles.mrp}>{formatPrice(props.price.mrp)}</Text>
+          <Text>{formatPrice(props.price.sale)}</Text>
+        </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 
