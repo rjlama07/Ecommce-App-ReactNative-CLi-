@@ -18,4 +18,18 @@ async function getItemFromLocalStorage(key: string): Promise<string | null> {
   }
 }
 
-export { saveToLocalStorage, getItemFromLocalStorage };
+async function removeItemFromLocalStorage(key: string) {
+  try {
+    const value = await AsyncStorage.removeItem(key);
+    return value;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+export {
+  saveToLocalStorage,
+  getItemFromLocalStorage,
+  removeItemFromLocalStorage,
+};

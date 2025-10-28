@@ -11,4 +11,6 @@ export default client;
 export const NetworkRoutes = {
   singUp: '/auth/sign-up',
   login: '/auth/sign-in',
+  isAuth: 'auth/is-auth',
+  getProducts: 'product/products',
 };

@@ -14,6 +14,9 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AuthStackParamList } from '../../navigator/AuthStack';
 import axios, { AxiosError } from 'axios';
 import client, { NetworkRoutes } from '../../api/client';
+import { saveToLocalStorage } from '../../utils/localSorage';
+import LocalStorageKey from '../../constants/localstorage';
+import { useAuth } from '../../context/AuthProvider';
 
 const SignIn = () => {
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
@@ -26,6 +29,7 @@ const SignIn = () => {
   const [error, setError] = useState<errorType>({});
   const [singleError, setSingleError] = useState('');
   const hasEnteredPassword = signInInfo.password.length > 0;
+  const authProvider = useAuth();
   const passwordSuffix = hasEnteredPassword ? (
     <Text
       onPress={() => {
@@ -42,9 +46,11 @@ const SignIn = () => {
       setError({});
       setSingleError('');
       const response = await client.post(NetworkRoutes.login, signInInfo);
+      console.log(response);
 
       console.log(JSON.stringify(response.data, null, 3));
-      navigation.navigate('home', { profile: response.data.profile });
+      await saveToLocalStorage(LocalStorageKey.token, response.data.token);
+      authProvider.setAuthenticate();
     } catch (e) {
       if (e instanceof AxiosError) {
         if (e.response?.data.errors) {
@@ -71,6 +77,7 @@ const SignIn = () => {
       </View>
       <AppTextInput
         label="Email"
+        defaultValue="riteshlama5@gmail.com"
         placeholder="email@example.com"
         autoCapitalize="none"
         keyboardType="email-address"
@@ -84,6 +91,7 @@ const SignIn = () => {
       />
       <AppTextInput
         label="Password"
+        defaultValue="riteshlama5@gmail.com"
         secureTextEntry={!showPassword}
         placeholder="*************"
         autoCapitalize="none"

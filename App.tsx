@@ -5,14 +5,16 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SignUp from './app/views/auth/SignUp';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './app/navigator/AuthStack';
+import RootNavigator from './app/navigator/RootNavigator';
+import AuthProvider from './app/context/AuthProvider';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <SafeAreaProvider style={styles.container}>
-        <AuthStack />
-      </SafeAreaProvider>
-    </NavigationContainer>
+    <SafeAreaProvider style={styles.container}>
+      <AuthProvider>
+        <RootNavigator></RootNavigator>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 };
 
