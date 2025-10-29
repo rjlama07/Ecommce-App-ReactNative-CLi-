@@ -170,11 +170,9 @@ const ProductDetails: FC<Props> = ({ route }) => {
           </Text>
           {product.bulletPoints.map(e => {
             return (
-              <View style={styles.bulletPointContainer}>
+              <View style={styles.bulletPointContainer} key={e}>
                 <View style={styles.bullet}></View>
-                <Text style={styles.bulletPoints} key={e}>
-                  {e}
-                </Text>
+                <Text style={styles.bulletPoints}>{e}</Text>
               </View>
             );
           })}
