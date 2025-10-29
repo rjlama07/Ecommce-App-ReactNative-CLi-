@@ -14,6 +14,7 @@ export function TabNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarActiveTintColor: '#FFA500',
       }}
     >
       <Tab.Screen

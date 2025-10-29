@@ -7,6 +7,8 @@ import {
   Image,
   ViewToken,
   Pressable,
+  Touchable,
+  TouchableOpacity,
 } from 'react-native';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -19,6 +21,7 @@ import PrimaryButton from '../../../components/Buttons/PrimaryButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import Price from '../../../components/Price';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type Props = StackScreenProps<HomeScreenParamList, 'product'>;
 
@@ -28,6 +31,7 @@ interface ProductDetails extends Product {
 }
 
 const ProductDetails: FC<Props> = ({ route }) => {
+  const navigator = useNavigation<NavigationProp<HomeScreenParamList>>();
   const params = route.params.id;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [product, setProduct] = useState<ProductDetails | null>(null);
@@ -86,6 +90,31 @@ const ProductDetails: FC<Props> = ({ route }) => {
         paddingBottom: 12,
       }}
     >
+      <SafeAreaView
+        style={{
+          position: 'absolute',
+          paddingHorizontal: 16,
+          zIndex: 1,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            navigator.goBack();
+          }}
+        >
+          <View
+            style={{
+              padding: 8,
+              backgroundColor: 'lightgrey',
+              borderRadius: 18,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <AntDesign name="left" size={18} color="black" />
+          </View>
+        </TouchableOpacity>
+      </SafeAreaView>
       <ScrollView
         style={{
           paddingBottom: 16,
@@ -103,14 +132,16 @@ const ProductDetails: FC<Props> = ({ route }) => {
             viewabilityConfig={viewabilityConfig.current}
             renderItem={items => {
               return (
-                <Image
-                  source={{ uri: items.item }}
-                  resizeMode="cover"
-                  style={{
-                    height: width,
-                    width: width,
-                  }}
-                />
+                <View>
+                  <Image
+                    source={{ uri: items.item }}
+                    resizeMode="cover"
+                    style={{
+                      height: width,
+                      width: width,
+                    }}
+                  />
+                </View>
               );
             }}
           />
