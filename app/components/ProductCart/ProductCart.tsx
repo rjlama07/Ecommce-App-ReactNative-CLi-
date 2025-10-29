@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, { FC } from 'react';
 import Product from '../../models/ProductModel';
+import Price from '../Price';
 
 const deviceWidth = Dimensions.get('window').width;
 interface ProductParams extends Product {
@@ -29,23 +30,11 @@ const ProductCart: FC<ProductParams> = props => {
           source={{ uri: props.poster }}
         />
         <Text style={styles.title}>{props.title}</Text>
-        <View style={styles.priceContiner}>
-          <Text style={styles.price}>Price: </Text>
-          <Text style={styles.mrp}>{formatPrice(props.price.mrp)}</Text>
-          <Text>{formatPrice(props.price.sale)}</Text>
-        </View>
+        <Price price={props.price} />
       </View>
     </Pressable>
   );
 };
-
-function formatPrice(price: number): string {
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'AUD',
-  });
-  return formatter.format(price);
-}
 
 export default ProductCart;
 
@@ -62,14 +51,14 @@ const styles = StyleSheet.create({
   price: {
     fontWeight: 'bold',
   },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 4,
-  },
   mrp: {
     marginRight: 8,
     textDecorationStyle: 'solid',
     textDecorationLine: 'line-through',
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 4,
   },
 });

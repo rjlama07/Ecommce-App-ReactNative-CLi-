@@ -5,8 +5,10 @@ import {
   Dimensions,
   FlatList,
   Image,
+  ViewToken,
+  Pressable,
 } from 'react-native';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
 import { HomeScreenParamList } from '../../../navigator/HomeStack';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,6 +16,9 @@ import client, { NetworkRoutes } from '../../../api/client';
 import Product from '../../../models/ProductModel';
 import LoadingView from '../../../components/loading/LoadingView';
 import PrimaryButton from '../../../components/Buttons/PrimaryButton';
+import { ScrollView } from 'react-native-gesture-handler';
+import Price from '../../../components/Price';
+import { AntDesign } from '@react-native-vector-icons/ant-design';
 
 type Props = StackScreenProps<HomeScreenParamList, 'product'>;
 
@@ -27,6 +32,19 @@ const ProductDetails: FC<Props> = ({ route }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [product, setProduct] = useState<ProductDetails | null>(null);
   const width = Dimensions.get('window').width;
+  const [currentViewIndex, setCurrentVewIndex] = useState<number | null>(0);
+  const scrollRef = useRef<FlatList<string>>(null);
+  const onViewableItemsChanged = useRef(
+    (info: {
+      viewableItems: ViewToken<string>[];
+      changed: ViewToken<string>[];
+    }) => {
+      setCurrentVewIndex(info.viewableItems[0]?.index);
+    },
+  );
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 100,
+  });
 
   useEffect(() => {
     async function fetchProductDetails() {
@@ -50,6 +68,16 @@ const ProductDetails: FC<Props> = ({ route }) => {
   if (isLoading || product === null) {
     return <LoadingView />;
   }
+
+  function scrollImage(index: number) {
+    if (scrollRef.current) {
+      scrollRef.current.scrollToIndex({
+        index: index,
+        animated: true,
+        viewPosition: 0.5,
+      });
+    }
+  }
   return (
     <View
       style={{
@@ -58,18 +86,26 @@ const ProductDetails: FC<Props> = ({ route }) => {
         paddingBottom: 12,
       }}
     >
-      <View>
+      <ScrollView
+        style={{
+          paddingBottom: 16,
+        }}
+      >
         <View>
           <FlatList
+            ref={scrollRef}
             pagingEnabled
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={product.images}
-            keyExtractor={item => item}
+            data={[product.poster, ...product.images]}
+            keyExtractor={(item, index) => item + index}
+            onViewableItemsChanged={onViewableItemsChanged.current}
+            viewabilityConfig={viewabilityConfig.current}
             renderItem={items => {
               return (
                 <Image
                   source={{ uri: items.item }}
+                  resizeMode="cover"
                   style={{
                     height: width,
                     width: width,
@@ -79,8 +115,47 @@ const ProductDetails: FC<Props> = ({ route }) => {
             }}
           />
         </View>
+        <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
+          <FlatList
+            scrollEnabled={false}
+            pagingEnabled
+            horizontal
+            contentContainerStyle={{
+              gap: 4,
+            }}
+            showsHorizontalScrollIndicator={false}
+            data={[product.poster, ...product.images]}
+            keyExtractor={(item, index) => item + index}
+            renderItem={items => {
+              return (
+                <Pressable onPress={() => scrollImage(items.index)}>
+                  <Image
+                    source={{ uri: items.item }}
+                    style={{
+                      height: 60,
+                      borderRadius: 12,
+                      width: 60,
+                      resizeMode: 'cover',
+                      transform: [
+                        { scale: items.index === currentViewIndex ? 1 : 0.5 },
+                      ],
+                    }}
+                  />
+                </Pressable>
+              );
+            }}
+          />
+        </View>
+
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>{product.title}</Text>
+          <View
+            style={{
+              marginVertical: 12,
+            }}
+          >
+            <Price price={product.price} />
+          </View>
           <Text style={styles.description}>{product.description}</Text>
           <Text
             style={[
@@ -95,19 +170,42 @@ const ProductDetails: FC<Props> = ({ route }) => {
           </Text>
           {product.bulletPoints.map(e => {
             return (
-              <Text style={styles.bulletPoints} key={e}>
-                {e}
-              </Text>
+              <View style={styles.bulletPointContainer}>
+                <View style={styles.bullet}></View>
+                <Text style={styles.bulletPoints} key={e}>
+                  {e}
+                </Text>
+              </View>
             );
           })}
         </View>
-      </View>
+      </ScrollView>
       <View
         style={{
           paddingHorizontal: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+
+          gap: 8,
         }}
       >
-        <PrimaryButton title="Buy Now" />
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <PrimaryButton title="Buy Now" />
+        </View>
+        <View>
+          <Pressable style={styles.actionButtonStyle}>
+            <AntDesign name="shopping-cart" size={24} />
+          </Pressable>
+        </View>
+        <View>
+          <Pressable style={styles.actionButtonStyle}>
+            <AntDesign name="heart" size={24} />
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -124,6 +222,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
+  actionButtonStyle: {
+    backgroundColor: 'lightgrey',
+    padding: 8,
+    borderRadius: 12,
+  },
   description: {
     marginTop: 4,
     fontSize: 13,
@@ -134,5 +237,15 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     fontWeight: 600,
     paddingLeft: 6,
+  },
+  bulletPointContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  bullet: {
+    height: 8,
+    width: 8,
+    borderRadius: 4,
+    backgroundColor: 'black',
   },
 });
