@@ -66,6 +66,9 @@ const Fav = () => {
                   }}
                 />
                 <TouchableOpacity
+                  onPress={() => {
+                    favContext.updateFavourite(favourite);
+                  }}
                   style={{
                     position: 'absolute',
                     right: 8,
