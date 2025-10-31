@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   StyleSheet,
   Text,
   TextStyle,
@@ -14,11 +15,13 @@ interface Props extends TouchableOpacityProps {
   title: string;
   backgroundColor?: string;
   textStyle?: StyleProp<TextStyle>;
+  isLoading?: boolean;
 }
 
 const PrimaryButton: FC<Props> = ({
   title,
   backgroundColor,
+  isLoading = false,
   textStyle,
   ...rest
 }) => {
@@ -34,7 +37,11 @@ const PrimaryButton: FC<Props> = ({
       ]}
       {...rest}
     >
-      <Text style={[styles.text, textStyle]}>{title}</Text>
+      {isLoading ? (
+        <ActivityIndicator></ActivityIndicator>
+      ) : (
+        <Text style={[styles.text, textStyle]}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
