@@ -7,12 +7,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './app/navigator/AuthStack';
 import RootNavigator from './app/navigator/RootNavigator';
 import AuthProvider from './app/context/AuthProvider';
+import CartProvider from './app/context/CartProvider';
 
 const App = () => {
   return (
     <SafeAreaProvider style={styles.container}>
       <AuthProvider>
-        <RootNavigator></RootNavigator>
+        <CartProvider>
+          <RootNavigator></RootNavigator>
+        </CartProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );

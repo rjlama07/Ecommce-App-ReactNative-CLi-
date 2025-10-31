@@ -22,10 +22,11 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Price from '../../../components/Price';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useCart } from '../../../context/CartProvider';
 
 type Props = StackScreenProps<HomeScreenParamList, 'product'>;
 
-interface ProductDetails extends Product {
+export interface ProductDetails extends Product {
   images: string[];
   bulletPoints: string[];
 }
@@ -68,7 +69,7 @@ const ProductDetails: FC<Props> = ({ route }) => {
     }
     fetchProductDetails();
   }, []);
-
+  const cartCtx = useCart();
   if (isLoading || product === null) {
     return <LoadingView />;
   }
@@ -82,6 +83,7 @@ const ProductDetails: FC<Props> = ({ route }) => {
       });
     }
   }
+
   return (
     <View
       style={{
@@ -226,9 +228,14 @@ const ProductDetails: FC<Props> = ({ route }) => {
           <PrimaryButton title="Buy Now" />
         </View>
         <View>
-          <Pressable style={styles.actionButtonStyle}>
+          <TouchableOpacity
+            style={styles.actionButtonStyle}
+            onPress={() => {
+              cartCtx?.updateCart(product, 1);
+            }}
+          >
             <AntDesign name="shopping-cart" size={24} />
-          </Pressable>
+          </TouchableOpacity>
         </View>
         <View>
           <Pressable style={styles.actionButtonStyle}>

@@ -6,10 +6,18 @@ import Cart from '../views/auth/AuthenticatedRoutes/Cart';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
 import { Text } from 'react-native-gesture-handler';
 import HomeNavigationStack from './HomeStack';
+import { useCart } from '../context/CartProvider';
 
 const Tab = createBottomTabNavigator();
 
 export function TabNavigator() {
+  const cartContet = useCart();
+  const cartItemsCount = cartContet?.countAllItems();
+  const cartShowItem = cartItemsCount
+    ? cartItemsCount < 9
+      ? cartItemsCount
+      : '9+'
+    : undefined;
   return (
     <Tab.Navigator
       screenOptions={{
@@ -32,6 +40,7 @@ export function TabNavigator() {
         name="cart"
         component={Cart}
         options={{
+          tabBarBadge: cartShowItem,
           tabBarIcon: ({ size, color }) => {
             return (
               <AntDesign
