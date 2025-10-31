@@ -10,7 +10,11 @@ import { useCart } from '../context/CartProvider';
 import { useFavorite } from '../context/FavouriteProvider';
 import AppColors from '../constants/AppColors';
 import FavoouriteScrenStack from './FavouriteStack';
-
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
 const Tab = createBottomTabNavigator();
 
 export function TabNavigator() {
@@ -39,6 +43,10 @@ export function TabNavigator() {
       <Tab.Screen
         name="home"
         component={HomeNavigationStack}
+        listeners={{
+          tabPress: () =>
+            ReactNativeHapticFeedback.trigger('impactLight', options),
+        }}
         options={{
           tabBarIcon: ({ size, color }) => {
             return (
@@ -50,6 +58,10 @@ export function TabNavigator() {
       <Tab.Screen
         name="cart"
         component={Cart}
+        listeners={{
+          tabPress: () =>
+            ReactNativeHapticFeedback.trigger('impactLight', options),
+        }}
         options={{
           tabBarBadge: cartShowItem,
           tabBarIcon: ({ size, color }) => {
@@ -67,6 +79,10 @@ export function TabNavigator() {
       <Tab.Screen
         name="fav"
         component={FavoouriteScrenStack}
+        listeners={{
+          tabPress: () =>
+            ReactNativeHapticFeedback.trigger('impactLight', options),
+        }}
         options={{
           tabBarIcon: ({ size, color }) => {
             return (
