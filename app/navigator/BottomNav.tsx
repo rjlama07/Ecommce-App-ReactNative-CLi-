@@ -9,6 +9,7 @@ import HomeNavigationStack from './HomeStack';
 import { useCart } from '../context/CartProvider';
 import { useFavorite } from '../context/FavouriteProvider';
 import AppColors from '../constants/AppColors';
+import FavoouriteScrenStack from './FavouriteStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -65,7 +66,7 @@ export function TabNavigator() {
 
       <Tab.Screen
         name="fav"
-        component={Fav}
+        component={FavoouriteScrenStack}
         options={{
           tabBarIcon: ({ size, color }) => {
             return (
