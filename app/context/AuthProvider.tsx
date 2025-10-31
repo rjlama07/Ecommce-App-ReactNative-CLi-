@@ -9,13 +9,14 @@ import LocalStorageKey from '../constants/localstorage';
 import client, { NetworkRoutes } from '../api/client';
 
 export interface AuthResponse {
-  profile: { email: string; id: string; name: string };
+  profile: { email: string; id: string; name: string; image?: string };
 }
 interface DefaultAuthContext {
   isAuth: boolean | null;
   profile: AuthResponse['profile'] | null;
   logout: () => void;
   setAuthenticate: () => void;
+  updateProfile: (profile: AuthResponse['profile']) => void;
 }
 
 export const AuthContext = createContext<DefaultAuthContext>({
@@ -23,6 +24,7 @@ export const AuthContext = createContext<DefaultAuthContext>({
   profile: null,
   logout: () => {},
   setAuthenticate: () => {},
+  updateProfile: (profile: AuthResponse['profile']) => {},
 });
 
 interface AuthProviderProps {
@@ -46,7 +48,12 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
           });
           const authResponse: AuthResponse = response.data;
           const profileData = authResponse.profile;
-          console.log(profileData.id, profileData.email, profileData.name);
+          console.log(
+            profileData.id,
+            profileData.email,
+            profileData.name,
+            profileData.image,
+          );
           setIsAuthenticated(true);
           setUserProfile(authResponse.profile);
         } else {
@@ -66,6 +73,9 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   function authenticate() {
     setIsAuthenticated(true);
   }
+  function updateProfile(profile: AuthResponse['profile']) {
+    setUserProfile(profile);
+  }
   return (
     <AuthContext.Provider
       value={{
@@ -73,6 +83,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         profile: userProfile,
         logout: logOut,
         setAuthenticate: authenticate,
+        updateProfile: updateProfile,
       }}
     >
       {children}

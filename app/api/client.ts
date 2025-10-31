@@ -12,6 +12,7 @@ export const NetworkRoutes = {
   singUp: '/auth/sign-up',
   login: '/auth/sign-in',
   isAuth: 'auth/is-auth',
+  uplodProfile: 'auth/profile-image',
   getProducts: 'product/products',
   getCategories: 'product/categories',
   productDetail: (id: string) => `/product/detail/${id}`,
