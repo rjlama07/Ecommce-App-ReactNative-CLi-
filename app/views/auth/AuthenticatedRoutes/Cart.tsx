@@ -9,6 +9,8 @@ import {
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '../../../context/CartProvider';
+import { formatPrice } from '../../../utils/formatters';
+import AppColors from '../../../constants/AppColors';
 
 const Cart = () => {
   const cartContex = useCart();
@@ -98,14 +100,6 @@ const Cart = () => {
       </View>
     </SafeAreaView>
   );
-
-  function formatPrice(price: number): string {
-    const formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'AUD',
-    });
-    return formatter.format(price);
-  }
 };
 
 export default Cart;
@@ -146,7 +140,7 @@ const styles = StyleSheet.create({
   cartCountText: {
     fontSize: 16,
     fontWeight: 'bold',
-    backgroundColor: '#FFA500',
+    backgroundColor: AppColors.primaryColor,
     paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 8,

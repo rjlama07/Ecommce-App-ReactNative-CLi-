@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import React, { FC } from 'react';
 import { StyleProp } from 'react-native';
+import AppColors from '../../constants/AppColors';
 
 interface Props extends TouchableOpacityProps {
   title: string;
@@ -42,7 +43,7 @@ export default PrimaryButton;
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    backgroundColor: '#FFA500',
+    backgroundColor: AppColors.primaryColor,
     padding: 12,
     borderRadius: 20,
   },

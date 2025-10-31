@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { FC } from 'react';
+import { formatPrice } from '../utils/formatters';
 
 interface Props {
   price: {
@@ -17,14 +18,6 @@ const Price: FC<Props> = props => {
     </View>
   );
 };
-
-function formatPrice(price: number): string {
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'AUD',
-  });
-  return formatter.format(price);
-}
 
 export default Price;
 

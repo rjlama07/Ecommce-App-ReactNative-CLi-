@@ -8,13 +8,16 @@ import AuthStack from './app/navigator/AuthStack';
 import RootNavigator from './app/navigator/RootNavigator';
 import AuthProvider from './app/context/AuthProvider';
 import CartProvider from './app/context/CartProvider';
+import FavouriteProvider from './app/context/FavouriteProvider';
 
 const App = () => {
   return (
     <SafeAreaProvider style={styles.container}>
       <AuthProvider>
         <CartProvider>
-          <RootNavigator></RootNavigator>
+          <FavouriteProvider>
+            <RootNavigator></RootNavigator>
+          </FavouriteProvider>
         </CartProvider>
       </AuthProvider>
     </SafeAreaProvider>

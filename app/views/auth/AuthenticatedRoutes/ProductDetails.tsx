@@ -23,6 +23,7 @@ import Price from '../../../components/Price';
 import { AntDesign } from '@react-native-vector-icons/ant-design';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useCart } from '../../../context/CartProvider';
+import { useFavorite } from '../../../context/FavouriteProvider';
 
 type Props = StackScreenProps<HomeScreenParamList, 'product'>;
 
@@ -32,6 +33,7 @@ export interface ProductDetails extends Product {
 }
 
 const ProductDetails: FC<Props> = ({ route }) => {
+  const favouriteCotext = useFavorite();
   const navigator = useNavigation<NavigationProp<HomeScreenParamList>>();
   const params = route.params.id;
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -238,8 +240,17 @@ const ProductDetails: FC<Props> = ({ route }) => {
           </TouchableOpacity>
         </View>
         <View>
-          <Pressable style={styles.actionButtonStyle}>
-            <AntDesign name="heart" size={24} />
+          <Pressable
+            style={styles.actionButtonStyle}
+            onPress={() => {
+              favouriteCotext?.updateFavourite(product);
+            }}
+          >
+            <AntDesign
+              name="heart"
+              color={favouriteCotext?.isFavourite(product) ? 'red' : 'black'}
+              size={24}
+            />
           </Pressable>
         </View>
       </View>
